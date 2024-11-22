@@ -19,6 +19,7 @@ class SearchHistory(Base):
 class HistoryService:
     def __init__(self):
         self.engine = create_engine(os.environ['DATABASE_URL'])
+        Base.metadata.create_all(self.engine)
         Session = sessionmaker(bind=self.engine)
         self.session = Session()
 
