@@ -48,7 +48,8 @@ class GigaChatService:
                 self.api_url,
                 headers=headers,
                 json=payload,
-                timeout=30  # Add timeout to prevent hanging
+                timeout=30,  # Add timeout to prevent hanging
+                verify=False  # Отключаем проверку SSL сертификата
             )
             
             if response.status_code == 401:
@@ -68,6 +69,10 @@ class GigaChatService:
                 logger.error(f"Ошибка при обработке ответа GigaChat: {str(e)}")
                 return "Получен некорректный ответ от сервиса GigaChat. Пожалуйста, попробуйте позже."
 
+        except requests.exceptions.SSLError as e:
+            logger.error(f"SSL Error при подключении к GigaChat API: {str(e)}")
+            return "Ошибка SSL при подключении к GigaChat. Пожалуйста, попробуйте позже."
+            
         except requests.exceptions.Timeout:
             logger.error("Timeout при подключении к GigaChat API")
             return "Превышено время ожидания ответа от GigaChat. Пожалуйста, попробуйте позже."
