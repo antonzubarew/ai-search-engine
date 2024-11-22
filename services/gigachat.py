@@ -51,6 +51,9 @@ class GigaChatService:
                 "stream": False
             }
 
+            logger.info(f"Отправляем запрос к GigaChat API с заголовками: {headers}")
+            logger.info(f"Тело запроса: {json.dumps(payload, ensure_ascii=False)}")
+
             response = requests.post(
                 self.api_url,
                 headers=headers,
@@ -58,6 +61,9 @@ class GigaChatService:
                 timeout=30,  # Add timeout to prevent hanging
                 verify=False  # Отключаем проверку SSL сертификата
             )
+
+            logger.info(f"Получен ответ от GigaChat API. Статус: {response.status_code}")
+            logger.info(f"Тело ответа: {response.text}")
             
             if response.status_code == 401:
                 logger.error(f"Ошибка авторизации GigaChat API: {response.text}")
