@@ -62,6 +62,15 @@ def delete_search(search_id):
         logger.error(f"Error deleting search history: {str(e)}")
         return jsonify({'error': 'Ошибка при удалении записи'}), 500
 
+@app.route('/search/last_id')
+def get_last_search_id():
+    try:
+        last_search = history_service.get_last_search()
+        return jsonify({'id': last_search.id if last_search else None})
+    except Exception as e:
+        logger.error(f"Error getting last search ID: {str(e)}")
+        return jsonify({'error': 'Ошибка при получении ID'}), 500
+
 @app.errorhandler(404)
 def not_found_error(error):
     return render_template('index.html'), 404

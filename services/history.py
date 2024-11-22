@@ -53,3 +53,9 @@ class HistoryService:
             logger.error(f"Error deleting search: {str(e)}")
             self.session.rollback()
 
+    def get_last_search(self):
+        try:
+            return self.session.query(SearchHistory).order_by(SearchHistory.id.desc()).first()
+        except Exception as e:
+            logger.error(f"Error getting last search: {str(e)}")
+            return None
