@@ -24,9 +24,10 @@ def index():
 @app.route('/search', methods=['POST'])
 def search():
     try:
-        if not request.is_json:
+        data = request.get_json()
+        if not data:
             return jsonify({'error': 'Ожидается JSON'}), 400
-        query = request.json.get('query', '')
+        query = data.get('query', '')
         
         if not query:
             return jsonify({'error': 'Пустой запрос'}), 400
