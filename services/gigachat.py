@@ -1,6 +1,7 @@
 import requests
 from typing import List, Dict
 import logging
+import uuid
 import json
 
 logger = logging.getLogger(__name__)
@@ -11,6 +12,10 @@ class GigaChatService:
         self.api_url = "https://gigachat.devices.sberbank.ru/api/v1/chat/completions"
 
     def get_response(self, query: str, search_results: List[Dict]) -> str:
+        if not self.api_key.strip():
+            logger.error("API ключ пустой или содержит только пробелы")
+            return "Ошибка: API ключ не установлен"
+
         try:
             # Format context from search results
             context = "\n".join([
@@ -31,7 +36,9 @@ class GigaChatService:
             headers = {
                 "Authorization": f"Bearer {self.api_key}",
                 "Content-Type": "application/json",
-                "Accept": "application/json"
+                "Accept": "application/json",
+                "X-Client-Request-ID": str(uuid.uuid4()),
+                "X-Auth-Type": "Bearer"
             }
 
             payload = {
@@ -53,7 +60,7 @@ class GigaChatService:
             )
             
             if response.status_code == 401:
-                logger.error("Ошибка авторизации GigaChat API: неверный ключ доступа")
+                logger.error(f"Ошибка авторизации GigaChat API: {response.text}")
                 return "Ошибка авторизации при подключении к GigaChat. Пожалуйста, проверьте настройки API ключа."
                 
             if response.status_code == 429:
