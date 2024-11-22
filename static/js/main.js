@@ -113,13 +113,32 @@ document.addEventListener('DOMContentLoaded', function() {
             const searchId = btn.dataset.id;
             const container = btn.closest('.recent-search-container');
             
+            if (!searchId) {
+                console.error('ID записи не найден');
+                return;
+            }
+            
             fetch(`/history/${searchId}`, {
                 method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.success) {
                     container.remove();
+                    
+                    // Если все элементы удалены, скрыть секцию истории
+                    const historySection = document.querySelector('.recent-searches');
+                    if (historySection && document.querySelectorAll('.recent-search-container').length === 0) {
+                        historySection.remove();
+                    }
                 } else {
                     console.error('Ошибка при удалении:', data.error);
                 }
