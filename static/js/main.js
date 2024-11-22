@@ -10,11 +10,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize Feather icons
     feather.replace();
 
-    searchForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        const query = searchInput.value.trim();
-        
+    // Function to perform search
+    async function performSearch(query) {
         if (!query) {
             showError('Пожалуйста, введите вопрос');
             return;
@@ -63,6 +60,22 @@ document.addEventListener('DOMContentLoaded', function() {
             showError(error.message);
         } finally {
             loading.classList.add('d-none');
+        }
+    }
+
+    // Handle form submit
+    searchForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const query = searchInput.value.trim();
+        await performSearch(query);
+    });
+
+    // Handle clicks on recent searches
+    document.addEventListener('click', async function(e) {
+        if (e.target.classList.contains('recent-search-item')) {
+            const query = e.target.dataset.query;
+            searchInput.value = query;
+            await performSearch(query);
         }
     });
 

@@ -2,6 +2,7 @@ from flask import Flask, render_template, jsonify, request
 from config import Config
 from services.search import SearchService
 from services.gigachat import GigaChatService
+from services.history import HistoryService
 import logging
 
 app = Flask(__name__)
@@ -13,10 +14,12 @@ logger = logging.getLogger(__name__)
 
 search_service = SearchService()
 gigachat_service = GigaChatService(app.config['GIGACHAT_API_KEY'])
+history_service = HistoryService()
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    recent_searches = history_service.get_recent_searches()
+    return render_template('index.html', recent_searches=recent_searches)
 
 @app.route('/search', methods=['POST'])
 def search():
@@ -28,6 +31,9 @@ def search():
             
         if len(query) > app.config['MAX_QUERY_LENGTH']:
             return jsonify({'error': 'Запрос слишком длинный'}), 400
+
+        # Save search query to history
+        history_service.add_search(query)
 
         # Get search results
         search_results = search_service.search(query)
