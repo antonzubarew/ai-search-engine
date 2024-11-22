@@ -2,37 +2,12 @@ import requests
 from typing import List, Dict
 import logging
 import json
-import uuid
 
 logger = logging.getLogger(__name__)
 
 class GigaChatService:
     def __init__(self, api_key: str):
         self.api_key = api_key
-    def get_auth_token(self) -> str:
-        try:
-            auth_url = "https://ngw.devices.sberbank.ru:9443/api/v2/oauth"
-            auth_response = requests.post(
-                auth_url,
-                headers={
-                    "Authorization": f"Bearer {self.api_key}",
-                    "RqUID": str(uuid.uuid4()),
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                data={"scope": "GIGACHAT_API_PERS"},
-                verify=False
-            )
-            
-            if auth_response.status_code == 401:
-                logger.error("Ошибка авторизации при получении OAuth токена")
-                raise Exception("Ошибка авторизации при получении OAuth токена")
-                
-            auth_response.raise_for_status()
-            return auth_response.json()["access_token"]
-            
-        except requests.exceptions.RequestException as e:
-            logger.error(f"Ошибка при получении OAuth токена: {str(e)}")
-            raise Exception("Не удалось получить OAuth токен")
         self.api_url = "https://gigachat.devices.sberbank.ru/api/v1/chat/completions"
 
     def get_response(self, query: str, search_results: List[Dict]) -> str:
@@ -53,11 +28,8 @@ class GigaChatService:
             Пожалуйста, предоставьте подробный ответ на русском языке, основываясь на предоставленном контексте.
             """
 
-            # Get OAuth token for authentication
-            auth_token = self.get_auth_token()
-            
             headers = {
-                "Authorization": f"Bearer {auth_token}",
+                "Authorization": f"Bearer {self.api_key}",
                 "Content-Type": "application/json",
                 "Accept": "application/json"
             }
