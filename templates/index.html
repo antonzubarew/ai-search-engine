@@ -1,77 +1,84 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8 text-center mb-4">
-            <h1 class="display-4 mb-4">AI Поисковик</h1>
-            
-            <div class="search-container">
-                <form id="searchForm" class="mb-4">
-                    <div class="input-group">
-                        <input type="text" 
-                               id="searchInput" 
-                               class="form-control form-control-lg" 
-                               placeholder="Введите ваш вопрос..."
-                               maxlength="200"
-                               required>
-                        <button class="btn btn-primary" type="submit">
-                            <i data-feather="search"></i> Поиск
-                        </button>
-                    </div>
-                </form>
-                
-                <!-- Recent searches -->
-                {% if recent_searches %}
-                <div class="recent-searches mt-3">
-                    <h6 class="text-muted mb-2">История поиска:</h6>
-                    <div class="d-flex flex-wrap gap-2">
-                        {% for search in recent_searches %}
-                        <div class="recent-search-container">
-                            <button class="btn btn-sm btn-outline-secondary recent-search-item" 
-                                    data-query="{{ search.query }}"
-                                    data-id="{{ search.id }}">
-                                {{ search.query }}
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger delete-history-item"
-                                    data-id="{{ search.id }}">
-                                <i data-feather="x"></i>
+<div class="container-fluid mt-5">
+    <div class="row">
+        <!-- Основной контент -->
+        <div class="col-md-9">
+            <div class="row justify-content-center">
+                <div class="col-md-8 text-center mb-4">
+                    <h1 class="display-4 mb-4">AI Поисковик</h1>
+                    <form id="searchForm" class="mb-4">
+                        <div class="input-group">
+                            <input type="text" 
+                                   id="searchInput" 
+                                   class="form-control form-control-lg" 
+                                   placeholder="Введите ваш вопрос..."
+                                   maxlength="200"
+                                   required>
+                            <button class="btn btn-primary" type="submit">
+                                <i data-feather="search"></i> Поиск
                             </button>
                         </div>
-                        {% endfor %}
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Loading spinner -->
+            <div id="loading" class="text-center d-none">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Загрузка...</span>
+                </div>
+                <p class="mt-2">Ищем ответ на ваш вопрос...</p>
+            </div>
+            
+            <!-- Error message -->
+            <div id="errorMessage" class="alert alert-danger d-none" role="alert"></div>
+            
+            <!-- Results section -->
+            <div id="results" class="row justify-content-center d-none">
+                <div class="col-md-12">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">Ответ AI</h5>
+                            <div id="aiResponse" class="card-text"></div>
+                        </div>
+                    </div>
+
+                    <div class="search-results">
+                        <h5 class="mb-3">Источники:</h5>
+                        <div id="searchResults"></div>
                     </div>
                 </div>
-                {% endif %}
             </div>
         </div>
-    </div>
-
-    <!-- Loading spinner -->
-    <div id="loading" class="text-center d-none">
-        <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Загрузка...</span>
-        </div>
-        <p class="mt-2">Ищем ответ на ваш вопрос...</p>
-    </div>
-
-    <!-- Error message -->
-    <div id="errorMessage" class="alert alert-danger d-none" role="alert">
-    </div>
-
-    <!-- Results section -->
-    <div id="results" class="row justify-content-center d-none">
-        <div class="col-md-8">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">Ответ AI</h5>
-                    <div id="aiResponse" class="card-text"></div>
+        
+        <!-- История поиска справа -->
+        <div class="col-md-3">
+            {% if recent_searches %}
+            <div class="recent-searches mt-3 sticky-top">
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="card-title text-muted mb-3">История поиска:</h6>
+                        <div class="d-flex flex-column gap-2">
+                            {% for search in recent_searches %}
+                            <div class="recent-search-container">
+                                <button class="btn btn-sm btn-outline-secondary recent-search-item w-100 text-start" 
+                                        data-query="{{ search.query }}"
+                                        data-id="{{ search.id }}">
+                                    {{ search.query }}
+                                    <button class="btn btn-sm btn-outline-danger delete-history-item float-end"
+                                            data-id="{{ search.id }}">
+                                        <i data-feather="x"></i>
+                                    </button>
+                                </button>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <div class="search-results">
-                <h5 class="mb-3">Источники:</h5>
-                <div id="searchResults"></div>
-            </div>
+            {% endif %}
         </div>
     </div>
 </div>
