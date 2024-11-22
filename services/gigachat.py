@@ -36,27 +36,15 @@ class GigaChatService:
             Контекст из поиска:
             {context}
             
-            Пожалуйста, предоставьте подробный ответ на русском языке, основываясь на предоставленном контексте.
-            '''
-
-            # Формируем промпт
-            user_prompt = f'''
-            Системная инструкция: {system_prompt}
-
-            Вопрос: {query}
-
-            Контекст:
-            {context}
-
             Пожалуйста, предоставьте подробный ответ на русском языке.
             '''
 
             # Отправляем запрос к API
             logger.info("Отправляем запрос к GigaChat API")
-            response = self.client.chat(
-                content=user_prompt,
-                model="GigaChat:latest"
-            )
+            response = self.client.chat([
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
+            ])
 
             logger.info("Получен успешный ответ от GigaChat API")
             return response.choices[0].message.content
