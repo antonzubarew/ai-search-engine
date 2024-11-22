@@ -1,6 +1,7 @@
 import logging
 from typing import List, Dict
 from gigachat import GigaChat
+from gigachat.models import Chat, Messages, MessagesRole
 
 logger = logging.getLogger(__name__)
 
@@ -41,10 +42,18 @@ class GigaChatService:
 
             # Отправляем запрос к API
             logger.info("Отправляем запрос к GigaChat API")
-            response = self.client.chat([
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt}
-            ])
+            messages = [
+                Messages(
+                    role=MessagesRole.SYSTEM,
+                    content=system_prompt
+                ),
+                Messages(
+                    role=MessagesRole.USER,
+                    content=user_prompt
+                )
+            ]
+            
+            response = self.client.chat(messages=messages)
 
             logger.info("Получен успешный ответ от GigaChat API")
             return response.choices[0].message.content
