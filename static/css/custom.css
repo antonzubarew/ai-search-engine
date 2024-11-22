@@ -86,9 +86,47 @@ h1, h2, h3, h4, h5, h6 {
     opacity: 1;
 }
 
+/* Стили для блока с AI-ответом */
+.card-body {
+    padding: 1.5rem;
+}
+
+#results .card:first-child {
+    height: 33vh;
+    min-height: 300px;
+}
+
+#results .card:first-child .card-body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
 #aiResponse {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-right: 10px;
     line-height: 1.6;
     font-size: 1.1rem;
+}
+
+/* Стилизация скроллбара */
+#aiResponse::-webkit-scrollbar {
+    width: 8px;
+}
+
+#aiResponse::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+}
+
+#aiResponse::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+#aiResponse::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
 }
 
 .search-results h5 {
