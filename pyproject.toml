@@ -11,4 +11,5 @@ dependencies = [
     "requests>=2.32.3",
     "duckduckgo-search>=6.3.5",
     "sqlalchemy>=2.0.36",
+    "certifi",
 ]
