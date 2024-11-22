@@ -11,7 +11,7 @@ app.config.from_object(Config)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-search_service = SearchService(app.config['SEARCH_API_KEY'])
+search_service = SearchService()
 gigachat_service = GigaChatService(app.config['GIGACHAT_API_KEY'])
 
 @app.route('/')
