@@ -1,39 +1,62 @@
+body {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    font-family: 'Inter', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 500;
+    letter-spacing: -0.5px;
+}
+
 .card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
     border-radius: 10px;
     margin-bottom: 1rem;
 }
 
-.search-result-item {
-    padding: 1rem;
-    border-bottom: 1px solid var(--bs-border-color);
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
 }
 
-.search-result-item:last-child {
-    border-bottom: none;
+.form-control {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    transition: all 0.3s ease;
 }
 
-.search-result-item h6 {
-    color: var(--bs-primary);
-    margin-bottom: 0.5rem;
+.form-control:focus {
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.1);
 }
 
-.search-result-item p {
-    margin-bottom: 0.5rem;
-    font-size: 0.9rem;
+.btn {
+    transition: all 0.3s ease;
 }
 
-.search-result-item a {
-    font-size: 0.8rem;
-    color: var(--bs-secondary);
+.btn-primary {
+    background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+    border: none;
 }
 
-#loading {
-    margin: 2rem 0;
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
 }
 
-.spinner-border {
-    width: 3rem;
-    height: 3rem;
+.recent-search-item {
+    transition: all 0.2s ease;
+    border-radius: 8px;
+    padding-right: 40px;
+}
+
+.recent-search-item:hover {
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .recent-searches {
@@ -45,10 +68,6 @@
     position: relative;
 }
 
-.recent-search-item {
-    padding-right: 40px;
-}
-
 .delete-history-item {
     position: absolute;
     right: 5px;
@@ -56,4 +75,30 @@
     transform: translateY(-50%);
     padding: 2px 6px;
     margin: 0;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.recent-search-container:hover .delete-history-item {
+    opacity: 1;
+}
+
+#aiResponse {
+    line-height: 1.6;
+    font-size: 1.1rem;
+}
+
+.search-results h5 {
+    font-weight: 300;
+    letter-spacing: 0.5px;
+}
+
+.spinner-border {
+    opacity: 0.8;
+    width: 3rem;
+    height: 3rem;
+}
+
+#loading {
+    margin: 2rem 0;
 }
