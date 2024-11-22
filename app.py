@@ -50,6 +50,16 @@ def search():
         logger.error(f"Error processing search request: {str(e)}")
         return jsonify({'error': 'Произошла ошибка при обработке запроса'}), 500
 
+
+@app.route('/history/<int:search_id>', methods=['DELETE'])
+def delete_search(search_id):
+    try:
+        history_service.delete_search(search_id)
+        return jsonify({'success': True})
+    except Exception as e:
+        logger.error(f"Error deleting search history: {str(e)}")
+        return jsonify({'error': 'Ошибка при удалении записи'}), 500
+
 @app.errorhandler(404)
 def not_found_error(error):
     return render_template('index.html'), 404

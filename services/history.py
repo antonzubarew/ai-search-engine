@@ -42,3 +42,14 @@ class HistoryService:
         except Exception as e:
             logger.error(f"Error getting search history: {str(e)}")
             return []
+
+    def delete_search(self, search_id: int):
+        try:
+            search = self.session.query(SearchHistory).get(search_id)
+            if search:
+                self.session.delete(search)
+                self.session.commit()
+        except Exception as e:
+            logger.error(f"Error deleting search: {str(e)}")
+            self.session.rollback()
+

@@ -105,6 +105,30 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+
+    // Handle delete history item clicks
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.delete-history-item')) {
+            const btn = e.target.closest('.delete-history-item');
+            const searchId = btn.dataset.id;
+            const container = btn.closest('.recent-search-container');
+            
+            fetch(`/history/${searchId}`, {
+                method: 'DELETE',
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    container.remove();
+                } else {
+                    console.error('Ошибка при удалении:', data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка при удалении:', error);
+            });
+        }
+    });
     // Character counter for input
     searchInput.addEventListener('input', function() {
         if (this.value.length > 200) {
