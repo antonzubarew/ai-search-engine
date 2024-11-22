@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => {
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                return response.json().then(err => Promise.reject(err));
             }
             return response.json();
         })
@@ -41,10 +41,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (historySection && document.querySelectorAll('.recent-search-container').length === 0) {
                     historySection.classList.add('d-none');
                 }
+            } else {
+                throw new Error(data.error || 'Неизвестная ошибка при удалении');
             }
         })
         .catch(error => {
-            console.error('Ошибка при удалении:', error);
+            console.error('Ошибка при удалении:', error.message || error);
+            // Показать сообщение об ошибке пользователю
+            errorMessage.textContent = error.message || 'Произошла ошибка при удалении записи';
+            errorMessage.classList.remove('d-none');
+            setTimeout(() => {
+                errorMessage.classList.add('d-none');
+            }, 3000);
         });
     }
 
