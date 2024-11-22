@@ -43,11 +43,18 @@ document.addEventListener('DOMContentLoaded', function() {
             // Display search results
             searchResults.innerHTML = data.search_results.map(result => `
                 <div class="search-result-item">
-                    <h6>${result.title}</h6>
-                    <p>${result.snippet}</p>
-                    <a href="${result.link}" target="_blank" rel="noopener noreferrer">
-                        Подробнее <i data-feather="external-link"></i>
-                    </a>
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6>${result.title}</h6>
+                            <p>${result.snippet}</p>
+                            <a href="${result.link}" target="_blank" rel="noopener noreferrer">
+                                Подробнее <i data-feather="external-link"></i>
+                            </a>
+                        </div>
+                        <button class="btn btn-sm btn-outline-danger delete-result">
+                            <i data-feather="x"></i>
+                        </button>
+                    </div>
                 </div>
             `).join('');
 
@@ -84,6 +91,20 @@ document.addEventListener('DOMContentLoaded', function() {
         errorMessage.classList.remove('d-none');
     }
 
+    // Handle delete result clicks
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.delete-result')) {
+            const resultItem = e.target.closest('.search-result-item');
+            if (resultItem) {
+                resultItem.remove();
+                
+                // Если все результаты удалены, скрыть секцию
+                if (searchResults.children.length === 0) {
+                    document.querySelector('.search-results').classList.add('d-none');
+                }
+            }
+        }
+    });
     // Character counter for input
     searchInput.addEventListener('input', function() {
         if (this.value.length > 200) {
