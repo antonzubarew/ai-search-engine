@@ -143,10 +143,51 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('click', function(e) {
         if (e.target.classList.contains('recent-search-item')) {
             const query = e.target.dataset.query;
-            if (query) {
-                searchInput.value = query;
-                searchForm.dispatchEvent(new Event('submit'));
-            }
+            const searchId = e.target.dataset.id;
+            
+            if (!query || !searchId) return;
+            
+            // Show loading state
+            loading.classList.remove('d-none');
+            results.classList.add('d-none');
+            errorMessage.classList.add('d-none');
+            
+            // Try to load saved results first
+            fetch(`/history/${searchId}/results`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Сохраненные результаты не найдены');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Update UI with saved results
+                    loading.classList.add('d-none');
+                    results.classList.remove('d-none');
+                    
+                    const queryText = document.getElementById('queryText');
+                    queryText.textContent = query;
+                    aiResponse.innerHTML = data.ai_response.replace(/\n/g, '<br>');
+                    
+                    searchResults.innerHTML = data.search_results.map(result => `
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <a href="${result.link}" target="_blank" rel="noopener noreferrer">
+                                        ${result.title}
+                                    </a>
+                                </h5>
+                                <p class="card-text">${result.snippet}</p>
+                            </div>
+                        </div>
+                    `).join('');
+                })
+                .catch(error => {
+                    // If loading saved results fails, perform new search
+                    console.log('Failed to load saved results, performing new search:', error);
+                    searchInput.value = query;
+                    searchForm.dispatchEvent(new Event('submit'));
+                });
         }
     });
 

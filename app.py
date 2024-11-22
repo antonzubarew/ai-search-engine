@@ -46,6 +46,13 @@ def search():
         # Get Tavily response
         ai_response = tavily_service.get_response(query, search_results)
         
+        # Save search results
+        history_service.save_search_results(
+            search_entry.id,
+            ai_response,
+            search_results
+        )
+        
         return jsonify({
             'ai_response': ai_response,
             'search_results': search_results,
@@ -58,6 +65,20 @@ def search():
 
 
 @app.route('/history/<int:search_id>', methods=['DELETE'])
+@app.route('/history/<int:search_id>/results')
+def get_search_results(search_id):
+    try:
+        results = history_service.get_search_results(search_id)
+        if results:
+            return jsonify({
+                'ai_response': results[0],
+                'search_results': results[1]
+            })
+        return jsonify({'error': 'Результаты не найдены'}), 404
+    except Exception as e:
+        logger.error(f"Error retrieving search results: {str(e)}")
+        return jsonify({'error': 'Ошибка при получении результатов'}), 500
+
 def delete_search(search_id):
     try:
         history_service.delete_search(search_id)

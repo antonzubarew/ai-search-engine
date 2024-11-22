@@ -59,6 +59,41 @@ class HistoryService:
             logger.error(f"Error deleting search: {str(e)}")
             return False
 
+    def save_search_results(self, search_id: int, ai_response: str, raw_results: list):
+        try:
+            self.session.execute(
+                """
+                INSERT INTO search_results (search_id, ai_response, raw_results)
+                VALUES (:search_id, :ai_response, :raw_results)
+                """,
+                {
+                    'search_id': search_id,
+                    'ai_response': ai_response,
+                    'raw_results': raw_results
+                }
+            )
+            self.session.commit()
+            return True
+        except Exception as e:
+            self.session.rollback()
+            logger.error(f"Error saving search results: {str(e)}")
+            return False
+
+    def get_search_results(self, search_id: int):
+        try:
+            result = self.session.execute(
+                """
+                SELECT ai_response, raw_results
+                FROM search_results
+                WHERE search_id = :search_id
+                """,
+                {'search_id': search_id}
+            ).first()
+            return result if result else None
+        except Exception as e:
+            logger.error(f"Error getting search results: {str(e)}")
+            return None
+
     def get_last_search(self):
         try:
             return self.session.query(SearchHistory).order_by(SearchHistory.id.desc()).first()
