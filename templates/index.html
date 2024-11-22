@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center mb-4">
+            <h1 class="display-4 mb-4">AI Поисковик</h1>
+            
+            <div class="search-container">
+                <form id="searchForm" class="mb-4">
+                    <div class="input-group">
+                        <input type="text" 
+                               id="searchInput" 
+                               class="form-control form-control-lg" 
+                               placeholder="Введите ваш вопрос..."
+                               maxlength="200"
+                               required>
+                        <button class="btn btn-primary" type="submit">
+                            <i data-feather="search"></i> Поиск
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading spinner -->
+    <div id="loading" class="text-center d-none">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Загрузка...</span>
+        </div>
+        <p class="mt-2">Ищем ответ на ваш вопрос...</p>
+    </div>
+
+    <!-- Error message -->
+    <div id="errorMessage" class="alert alert-danger d-none" role="alert">
+    </div>
+
+    <!-- Results section -->
+    <div id="results" class="row justify-content-center d-none">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Ответ AI</h5>
+                    <div id="aiResponse" class="card-text"></div>
+                </div>
+            </div>
+
+            <div class="search-results">
+                <h5 class="mb-3">Источники:</h5>
+                <div id="searchResults"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
