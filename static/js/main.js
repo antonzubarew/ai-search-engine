@@ -107,27 +107,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Add new search to history without page reload
             const historySection = document.querySelector('.recent-searches');
-            if (historySection) {
-                // Получаем ID нового поиска из ответа сервера
-                fetch('/search/last_id')
-                .then(response => response.json())
-                .then(data => {
-                    const searchContainer = document.createElement('div');
-                    searchContainer.className = 'recent-search-container';
-                    searchContainer.innerHTML = `
-                        <button class="btn btn-sm btn-outline-secondary recent-search-item" 
-                            data-query="${query}"
-                            data-id="${data.id}">
-                            ${query}
-                        </button>
-                        <button class="btn btn-sm btn-outline-danger delete-history-item"
-                            data-id="${data.id}">
-                            <i data-feather="x"></i>
-                        </button>
-                    `;
-                    historySection.querySelector('.d-flex').prepend(searchContainer);
-                    feather.replace();
-                });
+            if (historySection && data.search_id) {
+                const searchContainer = document.createElement('div');
+                searchContainer.className = 'recent-search-container';
+                searchContainer.innerHTML = `
+                    <button class="btn btn-sm btn-outline-secondary recent-search-item" 
+                        data-query="${query}"
+                        data-id="${data.search_id}">
+                        ${query}
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger delete-history-item"
+                        data-id="${data.search_id}">
+                        <i data-feather="x"></i>
+                    </button>
+                `;
+                historySection.querySelector('.d-flex').prepend(searchContainer);
+                feather.replace();
+                
+                // Show history section if it was hidden
+                historySection.classList.remove('d-none');
             }
         })
         .catch(error => {

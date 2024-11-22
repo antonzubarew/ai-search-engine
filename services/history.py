@@ -28,9 +28,11 @@ class HistoryService:
             search = SearchHistory(query=query)
             self.session.add(search)
             self.session.commit()
+            return search
         except Exception as e:
-            logger.error(f"Error adding search to history: {str(e)}")
             self.session.rollback()
+            logger.error(f"Error adding search to history: {str(e)}")
+            return None
 
     def get_recent_searches(self, limit: int = 10):
         try:
@@ -38,8 +40,9 @@ class HistoryService:
                 .order_by(SearchHistory.created_at.desc())\
                 .limit(limit)\
                 .all()
-            return [{'query': s.query, 'created_at': s.created_at} for s in searches]
+            return [{'id': s.id, 'query': s.query, 'created_at': s.created_at} for s in searches]
         except Exception as e:
+            self.session.rollback()
             logger.error(f"Error getting search history: {str(e)}")
             return []
 
@@ -49,13 +52,17 @@ class HistoryService:
             if search:
                 self.session.delete(search)
                 self.session.commit()
+                return True
+            return False
         except Exception as e:
-            logger.error(f"Error deleting search: {str(e)}")
             self.session.rollback()
+            logger.error(f"Error deleting search: {str(e)}")
+            return False
 
     def get_last_search(self):
         try:
             return self.session.query(SearchHistory).order_by(SearchHistory.id.desc()).first()
         except Exception as e:
+            self.session.rollback()
             logger.error(f"Error getting last search: {str(e)}")
             return None

@@ -35,7 +35,9 @@ def search():
             return jsonify({'error': 'Запрос слишком длинный'}), 400
 
         # Save search query to history
-        history_service.add_search(query)
+        search_entry = history_service.add_search(query)
+        if not search_entry:
+            return jsonify({'error': 'Ошибка при сохранении запроса'}), 500
 
         # Get search results
         search_results = search_service.search(query)
@@ -45,7 +47,8 @@ def search():
         
         return jsonify({
             'ai_response': ai_response,
-            'search_results': search_results
+            'search_results': search_results,
+            'search_id': search_entry.id
         })
 
     except Exception as e:
