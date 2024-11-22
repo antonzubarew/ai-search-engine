@@ -1,13 +1,14 @@
 import requests
 from typing import List, Dict
 import logging
+import json
 
 logger = logging.getLogger(__name__)
 
 class GigaChatService:
     def __init__(self, api_key: str):
         self.api_key = api_key
-        self.api_url = "https://api.gigachat.ai/v1/chat/completions"  # Replace with actual API endpoint
+        self.api_url = "https://gigachat.devices.sberbank.ru/api/v1/chat/completions"
 
     def get_response(self, query: str, search_results: List[Dict]) -> str:
         try:
@@ -29,21 +30,52 @@ class GigaChatService:
 
             headers = {
                 "Authorization": f"Bearer {self.api_key}",
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Accept": "application/json"
             }
 
             payload = {
-                "model": "GigaChat",
-                "messages": [{"role": "user", "content": prompt}],
+                "messages": [{
+                    "role": "user",
+                    "content": prompt
+                }],
                 "temperature": 0.7,
-                "max_tokens": 1000
+                "max_tokens": 1000,
+                "stream": False
             }
 
-            response = requests.post(self.api_url, headers=headers, json=payload)
+            response = requests.post(
+                self.api_url,
+                headers=headers,
+                json=payload,
+                timeout=30  # Add timeout to prevent hanging
+            )
+            
+            if response.status_code == 401:
+                logger.error("Ошибка авторизации GigaChat API: неверный ключ доступа")
+                return "Ошибка авторизации при подключении к GigaChat. Пожалуйста, проверьте настройки API ключа."
+                
+            if response.status_code == 429:
+                logger.error("Превышен лимит запросов к GigaChat API")
+                return "Превышен лимит запросов к GigaChat. Пожалуйста, попробуйте позже."
+            
             response.raise_for_status()
             
-            return response.json()['choices'][0]['message']['content']
+            try:
+                response_data = response.json()
+                return response_data['choices'][0]['message']['content']
+            except (KeyError, json.JSONDecodeError) as e:
+                logger.error(f"Ошибка при обработке ответа GigaChat: {str(e)}")
+                return "Получен некорректный ответ от сервиса GigaChat. Пожалуйста, попробуйте позже."
 
+        except requests.exceptions.Timeout:
+            logger.error("Timeout при подключении к GigaChat API")
+            return "Превышено время ожидания ответа от GigaChat. Пожалуйста, попробуйте позже."
+            
+        except requests.exceptions.ConnectionError as e:
+            logger.error(f"Ошибка подключения к GigaChat API: {str(e)}")
+            return "Не удалось подключиться к сервису GigaChat. Пожалуйста, проверьте подключение к интернету и попробуйте позже."
+            
         except requests.exceptions.RequestException as e:
             logger.error(f"GigaChat API error: {str(e)}")
-            return "Извините, произошла ошибка при обработке запроса."
+            return "Произошла ошибка при обработке запроса к GigaChat. Пожалуйста, попробуйте позже."
