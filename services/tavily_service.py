@@ -11,15 +11,21 @@ class TavilyService:
 
     def get_response(self, query: str, search_results: List[Dict]) -> str:
         try:
-            # Отправляем запрос к Tavily API
+            logger.info(f"Отправляем запрос к Tavily API: {query}")
             response = self.client.search(
                 query=query,
                 search_depth="advanced",
                 max_results=5
             )
+            logger.info("Получен ответ от Tavily API")
             
-            if not response or 'error' in response:
-                return "Произошла ошибка при получении ответа от Tavily API"
+            if not response:
+                logger.error("Получен пустой ответ от Tavily API")
+                return "Не удалось получить ответ от Tavily API"
+                
+            if 'error' in response:
+                logger.error(f"Ошибка Tavily API: {response['error']}")
+                return f"Ошибка при получении ответа: {response.get('error')}"
             
             # Форматируем ответ
             result = "На основе найденной информации:\n\n"
@@ -30,4 +36,4 @@ class TavilyService:
 
         except Exception as e:
             logger.error(f"Ошибка при обработке запроса Tavily: {str(e)}")
-            return "Произошла ошибка при обработке запроса к Tavily API. Пожалуйста, попробуйте позже."
+            return f"Произошла ошибка при обработке запроса: {str(e)}"

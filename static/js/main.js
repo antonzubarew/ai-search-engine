@@ -105,8 +105,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `).join('');
 
-            // Reload the page to update history
-            window.location.reload();
+            // Add new search to history without page reload
+            const historySection = document.querySelector('.recent-searches');
+            if (historySection) {
+                const searchContainer = document.createElement('div');
+                searchContainer.className = 'recent-search-container';
+                searchContainer.innerHTML = `
+                    <button class="btn btn-sm btn-outline-secondary recent-search-item" data-query="${query}">
+                        ${query}
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger delete-history-item">
+                        <i data-feather="x"></i>
+                    </button>
+                `;
+                historySection.querySelector('.d-flex').prepend(searchContainer);
+                feather.replace();
+            }
         })
         .catch(error => {
             // Hide loading state and show error
