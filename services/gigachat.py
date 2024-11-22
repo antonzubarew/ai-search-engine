@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 class GigaChatService:
     def __init__(self, api_key: str):
         self.api_key = api_key
-        self.api_url = "https://gigachat.devices.sberbank.ru/api/v1/chat/completions"
+        self.api_url = "https://beta.saluteai.sberdevices.ru/v1/chat/completions"
 
     def get_response(self, query: str, search_results: List[Dict]) -> str:
         if not self.api_key.strip():
@@ -37,8 +37,7 @@ class GigaChatService:
                 "Authorization": f"Bearer {self.api_key}",
                 "Content-Type": "application/json",
                 "Accept": "application/json",
-                "X-Client-Request-ID": str(uuid.uuid4()),
-                "X-Auth-Type": "Bearer"
+                "X-Request-ID": str(uuid.uuid4())
             }
 
             payload = {
@@ -59,7 +58,7 @@ class GigaChatService:
                 headers=headers,
                 json=payload,
                 timeout=30,  # Add timeout to prevent hanging
-                verify=False  # Отключаем проверку SSL сертификата
+                verify=True  # Включаем проверку SSL
             )
 
             logger.info(f"Получен ответ от GigaChat API. Статус: {response.status_code}")
