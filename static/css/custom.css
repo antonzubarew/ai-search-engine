@@ -21,21 +21,20 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
 }
 
-/* Убираем прозрачность для фона карточки */
+/* Непрозрачный фон для карточки истории */
 .recent-searches .card {
-    background: #2d2d2d;
+    background: #1a1a1a;
     backdrop-filter: none;
 }
 
 .form-control {
-    background: rgba(255, 255, 255, 0.05);
+    background: #1a1a1a;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(5px);
     transition: all 0.3s ease;
 }
 
 .form-control:focus {
-    background: rgba(255, 255, 255, 0.08);
+    background: #1a1a1a;
     box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.1);
 }
 
@@ -60,7 +59,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .recent-search-item:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: #2d2d2d;
 }
 
 .recent-searches {
