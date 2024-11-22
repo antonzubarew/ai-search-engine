@@ -102,3 +102,8 @@ h1, h2, h3, h4, h5, h6 {
 #loading {
     margin: 2rem 0;
 }
+.query-text {
+    font-style: italic;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 0.5rem;
+}

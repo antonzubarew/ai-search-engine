@@ -88,7 +88,9 @@ document.addEventListener('DOMContentLoaded', function() {
             // Show results
             results.classList.remove('d-none');
             
-            // Update AI response
+            // Update AI response section
+            const queryText = document.getElementById('queryText');
+            queryText.textContent = query;  // Добавляем текст запроса
             aiResponse.innerHTML = data.ai_response.replace(/\n/g, '<br>');
             
             // Update search results
