@@ -1,7 +1,6 @@
 import logging
 from typing import List, Dict
 from gigachat import GigaChat
-from gigachat.models import Messages, MessagesRole
 
 logger = logging.getLogger(__name__)
 
@@ -40,13 +39,23 @@ class GigaChatService:
             Пожалуйста, предоставьте подробный ответ на русском языке, основываясь на предоставленном контексте.
             '''
 
+            # Формируем промпт
+            user_prompt = f'''
+            Системная инструкция: {system_prompt}
+
+            Вопрос: {query}
+
+            Контекст:
+            {context}
+
+            Пожалуйста, предоставьте подробный ответ на русском языке.
+            '''
+
             # Отправляем запрос к API
             logger.info("Отправляем запрос к GigaChat API")
             response = self.client.chat(
-                messages=[
-                    Messages(role=MessagesRole.SYSTEM, content=system_prompt),
-                    Messages(role=MessagesRole.USER, content=user_prompt)
-                ]
+                content=user_prompt,
+                model="GigaChat:latest"
             )
 
             logger.info("Получен успешный ответ от GigaChat API")
