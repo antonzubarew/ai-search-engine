@@ -1,7 +1,7 @@
 from flask import Flask, render_template, jsonify, request
 from config import Config
 from services.search import SearchService
-from services.gigachat import GigaChatService
+from services.tavily_service import TavilyService
 from services.history import HistoryService
 import logging
 
@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 search_service = SearchService()
-gigachat_service = GigaChatService(app.config['GIGACHAT_API_KEY'])
+tavily_service = TavilyService(app.config['TAVILY_API_KEY'])
 history_service = HistoryService()
 
 @app.route('/')
@@ -24,6 +24,8 @@ def index():
 @app.route('/search', methods=['POST'])
 def search():
     try:
+        if not request.is_json:
+            return jsonify({'error': 'Ожидается JSON'}), 400
         query = request.json.get('query', '')
         
         if not query:
@@ -38,11 +40,11 @@ def search():
         # Get search results
         search_results = search_service.search(query)
         
-        # Get GigaChat response
-        giga_response = gigachat_service.get_response(query, search_results)
+        # Get Tavily response
+        ai_response = tavily_service.get_response(query, search_results)
         
         return jsonify({
-            'answer': giga_response,
+            'ai_response': ai_response,
             'search_results': search_results
         })
 

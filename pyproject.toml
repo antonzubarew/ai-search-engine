@@ -13,4 +13,5 @@ dependencies = [
     "sqlalchemy>=2.0.36",
     "certifi",
     "gigachat>=0.1.36",
+    "tavily-python>=0.5.0",
 ]
