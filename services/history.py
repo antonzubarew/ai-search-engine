@@ -9,12 +9,22 @@ logger = logging.getLogger(__name__)
 
 Base = declarative_base()
 
+from sqlalchemy.dialects.postgresql import JSON
+
 class SearchHistory(Base):
     __tablename__ = 'search_history'
     
     id = Column(Integer, primary_key=True)
     query = Column(String, nullable=False)
     created_at = Column(DateTime(timezone=True), default=datetime.utcnow)
+
+class SearchResults(Base):
+    __tablename__ = 'search_results'
+    
+    id = Column(Integer, primary_key=True)
+    search_id = Column(Integer, nullable=False)
+    ai_response = Column(String, nullable=False)
+    raw_results = Column(JSON, nullable=False)
 
 class HistoryService:
     def __init__(self):
@@ -61,17 +71,13 @@ class HistoryService:
 
     def save_search_results(self, search_id: int, ai_response: str, raw_results: list):
         try:
-            self.session.execute(
-                """
-                INSERT INTO search_results (search_id, ai_response, raw_results)
-                VALUES (:search_id, :ai_response, :raw_results)
-                """,
-                {
-                    'search_id': search_id,
-                    'ai_response': ai_response,
-                    'raw_results': raw_results
-                }
-            )
+            from sqlalchemy import text
+            stmt = text("INSERT INTO search_results (search_id, ai_response, raw_results) VALUES (:search_id, :ai_response, :raw_results)")
+            self.session.execute(stmt, {
+                'search_id': search_id,
+                'ai_response': ai_response,
+                'raw_results': raw_results
+            })
             self.session.commit()
             return True
         except Exception as e:
@@ -81,14 +87,9 @@ class HistoryService:
 
     def get_search_results(self, search_id: int):
         try:
-            result = self.session.execute(
-                """
-                SELECT ai_response, raw_results
-                FROM search_results
-                WHERE search_id = :search_id
-                """,
-                {'search_id': search_id}
-            ).first()
+            from sqlalchemy import text
+            stmt = text("SELECT ai_response, raw_results FROM search_results WHERE search_id = :search_id")
+            result = self.session.execute(stmt, {'search_id': search_id}).first()
             return result if result else None
         except Exception as e:
             logger.error(f"Error getting search results: {str(e)}")
