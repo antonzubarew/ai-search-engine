@@ -62,31 +62,9 @@ h1, h2, h3, h4, h5, h6 {
     background: #2d2d2d;
 }
 
-.search-container {
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-.history-container {
+.recent-searches {
     position: sticky;
-    top: 1rem;
-    background: #1a1a1a;
-    padding: 1rem;
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.query-box {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.1);
-}
-
-.ai-summary .card {
-    border: 1px solid rgba(255, 255, 255, 0.15);
-}
-
-.search-results {
-    margin-top: 2rem;
+    top: 20px;
 }
 
 .recent-search-container {

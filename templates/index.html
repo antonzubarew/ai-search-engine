@@ -1,25 +1,27 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container-fluid mt-4">
+<div class="container-fluid mt-5">
     <div class="row">
         <!-- Основной контент -->
         <div class="col-md-9">
-            <!-- Поисковая строка -->
-            <div class="search-container mb-4">
-                <form id="searchForm">
-                    <div class="input-group">
-                        <input type="text" 
-                               id="searchInput" 
-                               class="form-control form-control-lg" 
-                               placeholder="Введите ваш вопрос..."
-                               maxlength="200"
-                               required>
-                        <button class="btn btn-primary" type="submit">
-                            <i data-feather="search"></i> Поиск
-                        </button>
-                    </div>
-                </form>
+            <div class="row justify-content-center">
+                <div class="col-md-8 text-center mb-4">
+                    <h1 class="display-4 mb-4">Умный поиск</h1>
+                    <form id="searchForm" class="mb-4">
+                        <div class="input-group">
+                            <input type="text" 
+                                   id="searchInput" 
+                                   class="form-control form-control-lg" 
+                                   placeholder="Введите ваш вопрос..."
+                                   maxlength="200"
+                                   required>
+                            <button class="btn btn-primary" type="submit">
+                                <i data-feather="search"></i> Поиск
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
             
             <!-- Loading spinner -->
@@ -34,52 +36,52 @@
             <div id="errorMessage" class="alert alert-danger d-none" role="alert"></div>
             
             <!-- Results section -->
-            <div id="results" class="d-none">
-                <!-- AI Response -->
-                <div class="ai-summary mb-4">
-                    <div class="card">
+            <div id="results" class="row justify-content-center d-none">
+                <div class="col-md-12">
+                    <div class="card mb-4">
                         <div class="card-body">
-                            <h5 class="card-title mb-3">Саммари AI</h5>
-                            <div class="query-box mb-3 p-2 border rounded">
-                                <small class="text-muted">Запрос: <span id="queryText"></span></small>
+                            <h5 class="card-title">Ответ AI</h5>
+                            <div class="query-text text-muted mb-3">
+                                <small>Запрос: <span id="queryText"></span></small>
                             </div>
                             <div id="aiResponse" class="card-text"></div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Search Results -->
-                <div class="search-results">
-                    <h5 class="mb-3">Поисковые выводы:</h5>
-                    <div id="searchResults"></div>
+                    <div class="search-results">
+                        <h5 class="mb-3">Источники:</h5>
+                        <div id="searchResults"></div>
+                    </div>
                 </div>
             </div>
         </div>
         
         <!-- История поиска справа -->
         <div class="col-md-3">
-            <div class="history-container">
-                <h5 class="mb-3">История поиска</h5>
-                {% if recent_searches %}
-                <div class="recent-searches">
-                    <div class="d-flex flex-column gap-2">
-                        {% for search in recent_searches %}
-                        <div class="recent-search-container">
-                            <button class="btn btn-sm btn-outline-secondary recent-search-item w-100 text-start" 
-                                    data-query="{{ search.query }}"
-                                    data-id="{{ search.id }}">
-                                {{ search.query }}
-                                <button class="btn btn-sm btn-outline-danger delete-history-item float-end"
+            {% if recent_searches %}
+            <div class="recent-searches mt-3 sticky-top">
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="card-title text-muted mb-3">История поиска:</h6>
+                        <div class="d-flex flex-column gap-2">
+                            {% for search in recent_searches %}
+                            <div class="recent-search-container">
+                                <button class="btn btn-sm btn-outline-secondary recent-search-item w-100 text-start" 
+                                        data-query="{{ search.query }}"
                                         data-id="{{ search.id }}">
-                                    <i data-feather="x"></i>
+                                    {{ search.query }}
+                                    <button class="btn btn-sm btn-outline-danger delete-history-item float-end"
+                                            data-id="{{ search.id }}">
+                                        <i data-feather="x"></i>
+                                    </button>
                                 </button>
-                            </button>
+                            </div>
+                            {% endfor %}
                         </div>
-                        {% endfor %}
                     </div>
                 </div>
-                {% endif %}
             </div>
+            {% endif %}
         </div>
     </div>
 </div>
